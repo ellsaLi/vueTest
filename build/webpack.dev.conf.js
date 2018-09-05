@@ -12,7 +12,14 @@ const portfinder = require('portfinder')
 
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
-
+const express = require('express')
+const app = express()
+const appData = require('../data.json')
+const house = appData.house
+const goods = appData.goods
+const ratings = appData.ratings
+const apiRoutes = express.Router()
+app.use('/api', apiRoutes)
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
     rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap, usePostCSS: true })
@@ -42,6 +49,26 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     quiet: true, // necessary for FriendlyErrorsPlugin
     watchOptions: {
       poll: config.dev.poll,
+    },
+    before(app) {
+      app.get('/api/house', (req, res) => {
+        res.json({
+          errno: 0,
+          data: house
+        })
+      })
+      app.get('./api/goods', (req, res) => {
+        res.json({
+          errno: 0,
+          data: goods
+        })
+      })
+      app.get('/api/ratings', (req, res) => {
+        res.json({
+          errno: 0,
+          data: ratings
+        })
+      })
     }
   },
   plugins: [
